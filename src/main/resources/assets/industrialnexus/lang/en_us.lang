@@ -1,0 +1,4 @@
+tile.industrialnexus.nexus_controller.name=Nexus Controller
+item.industrialnexus.wireless_charger.name=Wireless Charger
+item.industrialnexus.wireless_charger.tooltip=Recharges FE items in your inventory within %s blocks of a Nexus Controller.
+itemGroup.industrialnexus=Industrial Nexus

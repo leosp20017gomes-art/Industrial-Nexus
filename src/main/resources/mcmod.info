@@ -1,0 +1,11 @@
+[
+  {
+    "modid": "industrialnexus",
+    "name": "Industrial Nexus",
+    "description": "Ponte entre grandes mods de tecnologia: rede de energia sem fios (FE) e integracoes opcionais com Immersive Engineering, HBM's NTM e TerraFirmaCraft.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": ["Leonardo"],
+    "useDependencyInformation": false
+  }
+]
