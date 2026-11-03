@@ -7,24 +7,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 8
-      - name: Testar download do Forge
+      - name: Testar variantes do Forge
         run: |
-          U=net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-userdev.jar
-          echo "Oficial:"
-          curl -s -o /dev/null -w "%{http_code}\n" -L https://maven.minecraftforge.net/$U
-          echo "Espelho:"
-          curl -s -o /dev/null -w "%{http_code}\n" -L https://bmclapi2.bangbang93.com/maven/$U
-      - name: Instalar Gradle 4.10.3
-        run: |
-          wget -q https://services.gradle.org/distributions/gradle-4.10.3-bin.zip
-          unzip -q gradle-4.10.3-bin.zip
-      - name: Compilar
-        run: ./gradle-4.10.3/bin/gradle setupCiWorkspace build --no-daemon
-      - uses: actions/upload-artifact@v4
-        with:
-          name: IndustrialNexus-jar
-          path: build/libs/*.jar
+          B=net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860
+          for h in https://maven.minecraftforge.net https://files.minecraftforge.net/maven https://bmclapi2.bangbang93.com/maven; do
+            for c in userdev userdev3 universal installer; do
+              echo "$h $c: $(curl -s -o /dev/null -w '%{http_code}' -L -A 'Mozilla/5.0' $h/$B-$c.jar)"
+            done
+          done
