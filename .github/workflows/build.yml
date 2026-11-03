@@ -11,6 +11,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 8
+      - name: Testar download do Forge
+        run: |
+          U=net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-userdev.jar
+          echo "Oficial:"
+          curl -s -o /dev/null -w "%{http_code}\n" -L https://maven.minecraftforge.net/$U
+          echo "Espelho:"
+          curl -s -o /dev/null -w "%{http_code}\n" -L https://bmclapi2.bangbang93.com/maven/$U
       - name: Instalar Gradle 4.10.3
         run: |
           wget -q https://services.gradle.org/distributions/gradle-4.10.3-bin.zip
