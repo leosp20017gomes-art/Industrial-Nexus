@@ -7,11 +7,28 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Testar variantes do Forge
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 8
+      - name: Escolher versao do Forge
         run: |
-          B=net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860
-          for h in https://maven.minecraftforge.net https://files.minecraftforge.net/maven https://bmclapi2.bangbang93.com/maven; do
-            for c in userdev userdev3 universal installer; do
-              echo "$h $c: $(curl -s -o /dev/null -w '%{http_code}' -L -A 'Mozilla/5.0' $h/$B-$c.jar)"
-            done
+          FOUND=""
+          for v in 2860 2859 2858 2857 2856 2855 2854 2852 2851 2847 2838 2837 2836 2825 2815 2768; do
+            F=1.12.2-14.23.5.$v
+            C=$(curl -s -o /dev/null -w '%{http_code}' -L -A 'Mozilla/5.0' https://maven.minecraftforge.net/net/minecraftforge/forge/$F/forge-$F-userdev.jar)
+            echo "$F: $C"
+            if [ "$C" = "200" ] && [ -z "$FOUND" ]; then FOUND=$F; fi
           done
+          echo "Escolhido: $FOUND"
+          if [ -n "$FOUND" ]; then sed -i "s/1.12.2-14.23.5.2860/$FOUND/" build.gradle; fi
+      - name: Instalar Gradle 4.10.3
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-4.10.3-bin.zip
+          unzip -q gradle-4.10.3-bin.zip
+      - name: Compilar
+        run: ./gradle-4.10.3/bin/gradle setupCiWorkspace build --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IndustrialNexus-jar
+          path: build/libs/*.jar
