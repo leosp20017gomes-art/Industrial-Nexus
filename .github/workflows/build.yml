@@ -22,12 +22,20 @@ jobs:
           done
           echo "Escolhido: $FOUND"
           if [ -n "$FOUND" ]; then sed -i "s/1.12.2-14.23.5.2860/$FOUND/" build.gradle; fi
+      - name: Corrigir nomes do codigo
+        run: |
+          grep -rl setUnlocalizedName src | xargs -r sed -i 's/setUnlocalizedName/setTranslationKey/g'
       - name: Instalar Gradle 4.10.3
         run: |
           wget -q https://services.gradle.org/distributions/gradle-4.10.3-bin.zip
           unzip -q gradle-4.10.3-bin.zip
       - name: Compilar
-        run: ./gradle-4.10.3/bin/gradle setupCiWorkspace build --no-daemon
+        run: |
+          set -o pipefail
+          ./gradle-4.10.3/bin/gradle setupCiWorkspace build --no-daemon 2>&1 | tee build.log
+      - name: Mostrar erros
+        if: failure()
+        run: grep -A3 "error:" build.log | head -80
       - uses: actions/upload-artifact@v4
         with:
           name: IndustrialNexus-jar
